@@ -3,7 +3,7 @@ package wanted.preonboarding.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
+import lombok.*;
 import wanted.preonboarding.domain.type.Career;
 import wanted.preonboarding.domain.type.JobGroup;
 import wanted.preonboarding.domain.type.JobPosition;
@@ -13,6 +13,8 @@ import java.util.List;
 
 public class JobRegisterDTO {
 
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Builder
     @Getter
     public static class Request {
 

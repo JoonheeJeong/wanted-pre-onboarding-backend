@@ -13,7 +13,7 @@ import wanted.preonboarding.global.response.ApiMessageResponse;
 import wanted.preonboarding.service.JobService;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/job")
+@RequestMapping("/api/v1/jobs")
 @RestController
 public class JobController {
 

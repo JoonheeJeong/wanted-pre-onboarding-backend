@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 class JobControllerTest {
 
-    private static final String BASE_URI = "/api/v1/job";
+    private static final String BASE_URI = "/api/v1/jobs";
     private static final String REQUEST_FORM = """
             {
                 "companyId": %d,

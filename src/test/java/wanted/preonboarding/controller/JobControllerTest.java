@@ -54,5 +54,25 @@ class JobControllerTest {
                     .andExpect(MockMvcResultMatchers.content().json("{\"message\":\"채용공고가 등록되었습니다.\"}"))
                     .andReturn();
         }
+
+        @DisplayName("400 유효하지 않은 직군")
+        @Test
+        void givenInvalidJobGroup_thenRespond400() throws Exception {
+            String requestBody = REQUEST_FORM.formatted(
+                    1L,
+                    "개발1",
+                    "백엔드 개발자",
+                    "주니어",
+                    1_000_000,
+                    "원티드랩에서 백엔드 주니어 개발자를 '적극' 채용합니다. 자격요건은..",
+                    "\"Java\",\"Spring Framework\",\"JPA\",\"SQL\"");
+
+            mockMvc.perform(MockMvcRequestBuilders.post(BASE_URI)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andExpect(MockMvcResultMatchers.content().json("{\"message\":\"입력이 유효하지 않습니다.\"}"))
+                    .andReturn();
+        }
     }
 }

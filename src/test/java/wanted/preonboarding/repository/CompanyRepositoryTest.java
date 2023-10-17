@@ -1,6 +1,5 @@
 package wanted.preonboarding.repository;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -10,8 +9,7 @@ import wanted.preonboarding.domain.Company;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class CompanyRepositoryTest {
@@ -32,6 +30,19 @@ class CompanyRepositoryTest {
                 Optional<Company> company = sut.findById(i);
                 assertThat(company).isPresent();
             }
+        }
+
+        @DisplayName("존재하지 않음")
+        @Test
+        void givenNotExistent_thenReturnNull() {
+            // given
+            Long id = (long) SIZE + 1;
+
+            // when
+            Optional<Company> company = sut.findById(id);
+
+            // then
+            assertThat(company).isEmpty();
         }
     }
 }

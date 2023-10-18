@@ -4,12 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import wanted.preonboarding.domain.base.AutoIdEntity;
-import wanted.preonboarding.domain.type.SkillName;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,7 +27,11 @@ public class JobSkill extends AutoIdEntity {
 
     public static List<JobSkill> from(Job savedJob, List<Skill> skills) {
         return skills.stream()
-                .map(skill -> new JobSkill(savedJob, skill))
-                .collect(Collectors.toList());
+                .map(skill -> from(savedJob, skill))
+                .toList();
+    }
+
+    public static JobSkill from(Job job, Skill skill) {
+        return new JobSkill(job, skill);
     }
 }

@@ -8,7 +8,7 @@ import wanted.preonboarding.domain.type.JobGroup;
 import wanted.preonboarding.domain.type.JobPosition;
 import wanted.preonboarding.dto.JobRegisterDTO;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -37,8 +37,8 @@ public class Job extends AutoIdAndCreatedAtAndUpdatedAtEntity {
     @Column(nullable = false)
     private String content;
     @Builder.Default
-    @OneToMany(mappedBy = "job")
-    private List<JobSkill> jobSkills = new ArrayList<>();
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL)
+    private List<JobSkill> jobSkills = new LinkedList<>();
 
     public static Job from(JobRegisterDTO.Request dto, Company company) {
         return Job.builder()
@@ -49,5 +49,9 @@ public class Job extends AutoIdAndCreatedAtAndUpdatedAtEntity {
                 .content(dto.getContent())
                 .reward(dto.getReward())
                 .build();
+    }
+
+    public void addJobSkill(JobSkill jobSkill) {
+        jobSkills.add(jobSkill);
     }
 }

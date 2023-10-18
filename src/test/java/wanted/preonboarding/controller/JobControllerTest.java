@@ -177,4 +177,25 @@ class JobControllerTest {
                     .andReturn();
         }
     }
+
+
+    @Order(4)
+    @DisplayName("채용공고 상세 조회")
+    @Nested
+    class GetDetail {
+
+        @DisplayName("[예외] 채용공고가 존재하지 않음")
+        @Test
+        void pass() throws Exception {
+            final long jobId = 0L;
+
+            mockMvc.perform(get(BASE_URI + "/" + jobId)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().json("{\"message\":\"해당 ID의 채용공고는 존재하지 않습니다.\"}"))
+                    .andDo(print())
+                    .andReturn();
+        }
+    }
 }

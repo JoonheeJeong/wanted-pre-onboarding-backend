@@ -1,6 +1,9 @@
 package wanted.preonboarding.dto;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import wanted.preonboarding.domain.*;
 import wanted.preonboarding.domain.type.Career;
 import wanted.preonboarding.domain.type.JobGroup;
@@ -22,7 +25,6 @@ public class JobInfoDTO {
     private JobPosition position;
     private Career career;
     private Integer reward;
-    private String content;
     private List<SkillName> skills;
 
     public static JobInfoDTO from(Job job) {
@@ -37,7 +39,6 @@ public class JobInfoDTO {
                 .position(job.getJobPosition())
                 .career(job.getCareer())
                 .reward(job.getReward())
-                .content(job.getContent())
                 .skills(job.getJobSkills().stream()
                         .map(JobSkill::getSkill)
                         .map(Skill::getName)

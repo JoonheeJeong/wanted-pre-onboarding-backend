@@ -31,4 +31,10 @@ public class JobController {
         jobService.update(jobId, dto);
         return ApiMessageResponse.of(HttpStatus.OK, "채용공고가 수정되었습니다.");
     }
+
+    @DeleteMapping("/{jobId}")
+    public ResponseEntity<?> update(@PathVariable Long jobId) {
+        jobService.delete(jobId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

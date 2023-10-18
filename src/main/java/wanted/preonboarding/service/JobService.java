@@ -36,21 +36,23 @@ public class JobService {
 
         final Job job = Job.from(dto, company);
 
-        dto.getSkills().stream()
-                .map(skillName -> {
-                    Skill skill = skillRepository.findByName(skillName)
-                            .orElseThrow(NotFoundSkillByNameException::new);
-                    return JobSkill.from(job, skill);
-                })
-                .forEach(job::addJobSkill);
+        addJobSkills(dto.getSkills(), job);
 
         return jobRepository.save(job);
     }
 
+    private void addJobSkills(List<SkillName> skillNames, Job job) {
+        skillNames.stream()
+                .map(skillName -> {
+                    Skill skill = getSkill(skillName);
+                    return JobSkill.from(job, skill);
+                })
+                .forEach(job::addJobSkill);
+    }
+
     @Transactional
     public Job update(Long jobId, JobUpdateDTO.Request dto) {
-        Job job = jobRepository.findById(jobId)
-                .orElseThrow(NotFoundJobException::new);
+        Job job = getJob(jobId);
 
         job.update(dto);
 
@@ -69,9 +71,13 @@ public class JobService {
 
     private List<Skill> convertToSkills(List<SkillName> skillNames) {
         return skillNames.stream()
-                .map(skillName -> skillRepository.findByName(skillName)
-                        .orElseThrow(NotFoundSkillByNameException::new))
+                .map(this::getSkill)
                 .toList();
+    }
+
+    private Skill getSkill(SkillName skillName) {
+        return skillRepository.findByName(skillName)
+                .orElseThrow(NotFoundSkillByNameException::new);
     }
 
     private void deleteUnusedJobSkills(Job job, List<Skill> updatingSkills) {
@@ -98,8 +104,12 @@ public class JobService {
 
     @Transactional
     public void delete(Long jobId) {
-        Job job = jobRepository.findById(jobId)
-                .orElseThrow(NotFoundJobException::new);
+        Job job = getJob(jobId);
         jobRepository.delete(job);
+    }
+
+    private Job getJob(Long jobId) {
+        return jobRepository.findById(jobId)
+                .orElseThrow(NotFoundJobException::new);
     }
 }

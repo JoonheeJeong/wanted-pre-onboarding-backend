@@ -2,15 +2,15 @@
 
 ## 📝 API 명세
 
-| 완료   | Method   | End Point                        | 기능             |
-|------|----------|----------------------------------|----------------|
-| ✅    | POST     | `/api/v1/jobs`                   | 채용공고 등록        |
-| ✅    | PUT      | `/api/v1/jobs/{job_id}`          | 채용공고 수정        |
-| ✅    | DELETE   | `/api/v1/jobs/{job_id}`          | 채용공고 삭제        |
-|      | GET      | `/api/v1/jobs`                   | 채용공고 전체 조회     |
-|      | GET      | `/api/v1/jobs?keyword={keyword}` | 채용공고 키워드 검색 조회 |
-|      | GET      | `/api/v1/jobs/{job_id}`          | 채용공고 상세 조회     |
-|      | POST     | `/api/v1/apply`                  | 채용 지원          |
+| 완료  | Method   | End Point                        | 기능             |
+|:---:|----------|----------------------------------|----------------|
+|  ✅  | POST     | `/api/v1/jobs`                   | 채용공고 등록        |
+|  ✅  | PUT      | `/api/v1/jobs/{job_id}`          | 채용공고 수정        |
+|  ✅  | DELETE   | `/api/v1/jobs/{job_id}`          | 채용공고 삭제        |
+|  ✅  | GET      | `/api/v1/jobs`                   | 채용공고 전체 조회     |
+|     | GET      | `/api/v1/jobs?keyword={keyword}` | 채용공고 키워드 검색 조회 |
+|     | GET      | `/api/v1/jobs/{job_id}`          | 채용공고 상세 조회     |
+|     | POST     | `/api/v1/apply`                  | 채용 지원          |
 
 ## ⚙️ 기능
 기능별 요구사항 분석 및 구현과정 포함 필요
@@ -136,6 +136,53 @@ Host: localhost:8080
 ### 4-1. 채용공고 목록 전체 조회
 #### 개요
 사용자가 채용공고의 목록을 조회함 <br/>
+#### 요구사항 분석
+- 채용내용을 제외한 채용공고의 정보와 회사의 정보를 함께 하나의 응답 객체로 만들고, 이것의 List를 최종 응답으로 넘겨주어야 한다.
+- GET 요청이므로 200 OK로 내려주면 될 것 같다.
+- 별도의 실패 응답은 필요 없어 보인다.
+#### Request
+```http request
+GET /api/v1/jobs HTTP/1.1
+Host: localhost:8080
+Accept: application/json
+```
+#### Response
+성공: `200 OK`
+```json
+[
+  {
+    "jobId": 1,
+    "companyName": "원티드",
+    "country": "한국",
+    "city": "서울",
+    "group": "개발",
+    "position": "백엔드 개발자",
+    "career": "주니어",
+    "reward": 2000000,
+    "content": "원티드랩에서 백엔드 주니어 개발자를 '적극' 채용합니다. 자격요건은..",
+    "skills": [ "Java", "Spring Framework", "JPA", "SQL" ]
+  },
+  {
+    "jobId": 2,
+    "companyName": "Vercel",
+    "country": "미국",
+    "city": "샌프란시스코",
+    "group": "개발",
+    "position": "프론트엔드 개발자",
+    "career": "시니어",
+    "reward": 4000000,
+    "content": "Vercel 프론트 채용 !!! ...",
+    "skills": [ "JavaScript", "GIT" ]
+  },
+    ...
+]
+```
+#### 구현 과정
+- 응답 DTO를 만들고, 이것을 List로 감싸서 Body로 응답한다.
+- 채용공고 목록을 stream으로 응답 DTO로 변환했다.  
+- 트랜잭션은 readOnly로 등록했다.
+- 컨트롤러 테스트에서 print를 찍어서 확인했다.
+- 서비스 통합 테스트로 레포지토리 테스트를 대체했다.
 
 ### 4-2. 채용공고 목록 키워드 검색 조회
 #### 개요

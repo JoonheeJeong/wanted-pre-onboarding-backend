@@ -2,7 +2,9 @@ package wanted.preonboarding.global.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 @Getter
@@ -14,7 +16,7 @@ public class ApiMessageResponse {
     public static ResponseEntity<?> of(HttpStatus httpStatus, String message) {
         ApiMessageResponse response = new ApiMessageResponse(message);
         return ResponseEntity.status(httpStatus)
-                .header("Content-Type", "application/json;charset=UTF-8")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
                 .body(response);
     }
 }

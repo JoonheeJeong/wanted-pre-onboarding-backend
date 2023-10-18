@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -141,7 +142,7 @@ class JobControllerTest {
         }
     }
 
-    @Order(3)
+    @Order(10000)
     @DisplayName("채용공고 삭제")
     @Nested
     class Delete {
@@ -160,4 +161,20 @@ class JobControllerTest {
         }
     }
 
+    @Order(3)
+    @DisplayName("채용공고 목록 조회")
+    @Nested
+    class GetList {
+
+        @DisplayName("성공")
+        @Test
+        void pass() throws Exception {
+            mockMvc.perform(get(BASE_URI)
+                        .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andReturn();
+        }
+    }
 }

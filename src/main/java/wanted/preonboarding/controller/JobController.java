@@ -2,13 +2,18 @@ package wanted.preonboarding.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wanted.preonboarding.dto.JobInfoDTO;
 import wanted.preonboarding.dto.JobRegisterDTO;
 import wanted.preonboarding.dto.JobUpdateDTO;
 import wanted.preonboarding.global.response.ApiMessageResponse;
 import wanted.preonboarding.service.JobService;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/jobs")
@@ -36,5 +41,13 @@ public class JobController {
     public ResponseEntity<?> update(@PathVariable Long jobId) {
         jobService.delete(jobId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getList() {
+        List<JobInfoDTO> body = jobService.getList();
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+                .body(body);
     }
 }

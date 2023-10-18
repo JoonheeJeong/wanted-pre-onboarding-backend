@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import wanted.preonboarding.dto.JobDetailDTO;
 import wanted.preonboarding.dto.JobInfoDTO;
 import wanted.preonboarding.dto.JobRegisterDTO;
 import wanted.preonboarding.dto.JobUpdateDTO;
@@ -46,6 +47,14 @@ public class JobController {
     @GetMapping
     public ResponseEntity<?> getList() {
         List<JobInfoDTO> body = jobService.getList();
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
+                .body(body);
+    }
+
+    @GetMapping("/{jobId}")
+    public ResponseEntity<?> getDetail(@PathVariable Long jobId) {
+        JobDetailDTO body = jobService.getDetail(jobId);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
                 .body(body);

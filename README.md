@@ -12,6 +12,9 @@
 |  ✅  | GET      | `/api/v1/jobs/{job_id}`          | 채용공고 상세 조회     |
 |     | POST     | `/api/v1/apply`                  | 채용 지원          |
 
+## 📊 ERD
+<img width="747" alt="wanted_preonboarding_erd" src="https://github.com/JoonheeJeong/wanted-pre-onboarding-backend/assets/22290112/a71d9c17-d713-4b14-a5ec-1d96ced0007d">
+
 ## ⚙️ 기능
 기능별 요구사항 분석 및 구현과정 포함 필요
 

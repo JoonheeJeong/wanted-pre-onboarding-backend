@@ -1,5 +1,6 @@
 package wanted.preonboarding.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,8 @@ import wanted.preonboarding.domain.JobSkill;
 import wanted.preonboarding.domain.Skill;
 import wanted.preonboarding.domain.type.SkillName;
 import wanted.preonboarding.dto.JobRegisterDTO;
+import wanted.preonboarding.dto.JobUpdateDTO;
+import wanted.preonboarding.global.exception.NotFoundJobException;
 import wanted.preonboarding.repository.CompanyRepository;
 import wanted.preonboarding.repository.JobRepository;
 import wanted.preonboarding.repository.SkillRepository;
@@ -69,6 +72,23 @@ class JobServiceTest {
                     .findByName(any(SkillName.class));
             verify(jobRepository, times(1))
                     .save(any(Job.class));
+        }
+    }
+
+    @DisplayName("채용공고 수정 서비스")
+    @Nested
+    class Update {
+
+        @DisplayName("[예외] 채용공고 존재하지 않음")
+        @Test
+        void givenNonexistentJob_thenThrowsException() {
+            // given
+            JobUpdateDTO.Request dto = mock(JobUpdateDTO.Request.class);
+            given(jobRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            // when, then
+            Assertions.assertThatThrownBy(() -> sut.update(anyLong(), dto))
+                    .isExactlyInstanceOf(NotFoundJobException.class);
         }
     }
 }

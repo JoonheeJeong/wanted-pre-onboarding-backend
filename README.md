@@ -2,15 +2,15 @@
 
 ## 📝 API 명세
 
-| 완료                 | Method   | End Point                        | 기능             |
-|--------------------|----------|----------------------------------|----------------|
-| :heavy_check_mark: | POST     | `/api/v1/jobs`                   | 채용공고 등록        |
-| :heavy_check_mark: | PUT      | `/api/v1/jobs/{job_id}`          | 채용공고 수정        |
-|                    | DELETE   | `/api/v1/jobs/{job_id}`          | 채용공고 삭제        |
-|                    | GET      | `/api/v1/jobs`                   | 채용공고 전체 조회     |
-|                    | GET      | `/api/v1/jobs?keyword={keyword}` | 채용공고 키워드 검색 조회 |
-|                    | GET      | `/api/v1/jobs/{job_id}`          | 채용공고 상세 조회     |
-|                    | POST     | `/api/v1/apply`                  | 채용 지원          |
+| 완료   | Method   | End Point                        | 기능             |
+|------|----------|----------------------------------|----------------|
+| ✅    | POST     | `/api/v1/jobs`                   | 채용공고 등록        |
+| ✅    | PUT      | `/api/v1/jobs/{job_id}`          | 채용공고 수정        |
+|      | DELETE   | `/api/v1/jobs/{job_id}`          | 채용공고 삭제        |
+|      | GET      | `/api/v1/jobs`                   | 채용공고 전체 조회     |
+|      | GET      | `/api/v1/jobs?keyword={keyword}` | 채용공고 키워드 검색 조회 |
+|      | GET      | `/api/v1/jobs/{job_id}`          | 채용공고 상세 조회     |
+|      | POST     | `/api/v1/apply`                  | 채용 지원          |
 
 ## ⚙️ 기능
 기능별 요구사항 분석 및 구현과정 포함 필요
@@ -23,7 +23,10 @@
 - 기술은 여러 개를 입력할 수 있도록 문자열 list로 입력 받는다.
 #### Request
 ```http request
-POST localhost:8080/api/v1/jobs HTTP/1.1
+POST /api/v1/jobs HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
 
 {
    "companyId": 1,
@@ -71,7 +74,10 @@ POST localhost:8080/api/v1/jobs HTTP/1.1
 - 채용공고 기술을 수정할 때는, 추가와 삭제가 동시에 일어날 수 있다.
 #### Request
 ```http request
-PUT localhost:8080/api/v1/jobs/1 HTTP/1.1
+PUT /api/v1/jobs/1 HTTP/1.1
+Host: localhost:8080
+Content-Type: application/json;charset=UTF-8
+Accept: application/json
 
 {
    "group": "개발",
@@ -106,7 +112,24 @@ PUT localhost:8080/api/v1/jobs/1 HTTP/1.1
 ### 3. 채용공고 삭제
 #### 개요
 회사가 채용공고를 삭제함 <br/>
+#### 요구사항 분석
+- DB에서 레코드를 삭제하지 않고 상태 컬럼을 두고 만료 상태로 둘 수도 있지만, 여기서는 아예 레코드를 날려버리기로 한다.
+- 이에 따라 요청 HTTP 메소드는 `DELETE`를 이용한다.
+- 응답은 성공 시 `204 No Content`로, 실패 시 전과 같이 400으로 내려주면 될 것 같다. 
+#### Request
+```http request
+DELETE /api/v1/jobs/1 HTTP/1.1
+Host: localhost:8080
+```
+#### Response
+성공: `204 No Content`
 
+실패: `400 Bad Request`
+```json
+{
+   "message": "해당 ID의 채용공고가 존재하지 않습니다." 
+}
+```
 ### 4-1. 채용공고 목록 전체 조회
 #### 개요
 사용자가 채용공고의 목록을 조회함 <br/>

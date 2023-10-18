@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wanted.preonboarding.domain.Company;
 import wanted.preonboarding.domain.Job;
-import wanted.preonboarding.domain.JobSkill;
 import wanted.preonboarding.domain.Skill;
 import wanted.preonboarding.domain.type.SkillName;
 import wanted.preonboarding.dto.JobRegisterDTO;

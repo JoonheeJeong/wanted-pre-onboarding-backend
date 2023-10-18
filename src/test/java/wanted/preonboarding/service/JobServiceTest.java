@@ -90,5 +90,20 @@ class JobServiceTest {
             Assertions.assertThatThrownBy(() -> sut.update(anyLong(), dto))
                     .isExactlyInstanceOf(NotFoundJobException.class);
         }
+
+        @DisplayName("[성공] 채용기술 외 수정")
+        @Test
+        void givenDifferentPropertyOtherThanSkill_thenUpdateThem() {
+            // given
+            JobUpdateDTO.Request dto = mock(JobUpdateDTO.Request.class);
+            Job job = mock(Job.class);
+            given(jobRepository.findById(anyLong())).willReturn(Optional.of(job));
+
+            // when
+            sut.update(anyLong(), dto);
+
+            // then
+            verify(job, times(1)).update(eq(dto));
+        }
     }
 }

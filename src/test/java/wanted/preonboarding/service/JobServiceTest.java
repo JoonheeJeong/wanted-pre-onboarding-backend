@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static wanted.preonboarding.domain.type.SkillName.*;
 
 @Transactional
 @SpringBootTest
@@ -45,9 +46,8 @@ class JobServiceTest {
         @Test
         void pass() {
             // given
-            Long companyId = 1L;
-            List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK, SkillName.JPA, SkillName.AWS);
-            JobRegisterDTO.Request registerRequestDto = makeRegisterDto(companyId, registerSkills);
+            List<SkillName> registerSkills = List.of(JAVA, SPRING_FRAMEWORK, JPA, AWS);
+            JobRegisterDTO.Request registerRequestDto = makeRegisterDto(COMPANY_ID, CAREER, registerSkills);
 
             // when
             Job savedJob = sut.register(registerRequestDto);
@@ -70,12 +70,10 @@ class JobServiceTest {
         @Test
         void givenDifferentSkills_thenUpdateThem() {
             // given
-            Long companyId = 1L;
-            List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK, SkillName.JPA, SkillName.AWS);
-            JobRegisterDTO.Request registerRequestDto = makeRegisterDto(companyId, registerSkills);
+            JobRegisterDTO.Request registerRequestDto = makeRegisterDto();
             Job savedJob = sut.register(registerRequestDto);
 
-            List<SkillName> updateSkills = List.of(SkillName.JAVA, SkillName.JPA, SkillName.SPRING_FRAMEWORK, SkillName.SQL);
+            List<SkillName> updateSkills = List.of(JAVA, JPA, SPRING_FRAMEWORK, SQL);
             JobUpdateDTO.Request updateRequestDto = JobUpdateDTO.Request.builder()
                     .group(JobGroup.DEVELOPMENT)
                     .position(JobPosition.BE)
@@ -114,9 +112,7 @@ class JobServiceTest {
         @Test
         void givenNonexistentJobId_thenThrowsException() {
             // given
-            final Long companyId = 1L;
-            List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK, SkillName.JPA, SkillName.AWS);
-            JobRegisterDTO.Request registerDto = makeRegisterDto(companyId, registerSkills);
+            JobRegisterDTO.Request registerDto = makeRegisterDto();
             Job job = sut.register(registerDto);
 
             // when
@@ -136,11 +132,10 @@ class JobServiceTest {
         @Test
         void pass() {
             // given
-            final Long size = 3L;
+            final int size = 3;
             List<Job> jobs = new ArrayList<>();
-            for (long companyId = 1L; companyId <= size; companyId++) {
-                List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK);
-                JobRegisterDTO.Request registerDto = makeRegisterDto(companyId, registerSkills);
+            for (int companyId = 1; companyId <= size; companyId++) {
+                JobRegisterDTO.Request registerDto = makeRegisterDto(companyId, CAREER, SKILL_NAMES);
                 Job job = sut.register(registerDto);
                 jobs.add(job);
             }
@@ -149,7 +144,7 @@ class JobServiceTest {
             List<JobInfoDTO> list = sut.getList();
 
             // then
-            assertThat(list).hasSize(size.intValue());
+            assertThat(list).hasSize(size);
             for (int i = 0; i < size; ++i) {
                 Job job = jobs.get(i);
                 Company company = job.getCompany();
@@ -158,18 +153,32 @@ class JobServiceTest {
                 assertThat(dto.getCity()).isEqualTo(company.getRegion().getCity());
                 assertThat(dto.getGroup()).isSameAs(job.getJobGroup());
                 assertThat(dto.getReward()).isEqualTo(job.getReward());
-                List<SkillName> skillNames = job.getJobSkills().stream().map(JobSkill::getSkill).map(Skill::getName).toList();
+                List<SkillName> skillNames = job.getJobSkills().stream()
+                        .map(JobSkill::getSkill)
+                        .map(Skill::getName)
+                        .toList();
                 assertThat(dto.getSkills()).isEqualTo(skillNames);
             }
         }
     }
 
-    private static JobRegisterDTO.Request makeRegisterDto(Long companyId, List<SkillName> registerSkills) {
+    private static final long COMPANY_ID = 1L;
+    private static final Career CAREER = Career.SENIOR;
+    private static final List<SkillName> SKILL_NAMES = List.of(JAVA, SPRING_FRAMEWORK, JPA, AWS);
+
+    private static JobRegisterDTO.Request makeRegisterDto() {
+        return makeRegisterDto(COMPANY_ID, CAREER, SKILL_NAMES);
+    }
+
+    private static JobRegisterDTO.Request makeRegisterDto(
+            long companyId,
+            Career career,
+            List<SkillName> registerSkills) {
         return JobRegisterDTO.Request.builder()
                 .companyId(companyId)
                 .group(JobGroup.DEVELOPMENT)
                 .position(JobPosition.BE)
-                .career(Career.SENIOR)
+                .career(career)
                 .reward(300000)
                 .content("채용내용...")
                 .skills(registerSkills)

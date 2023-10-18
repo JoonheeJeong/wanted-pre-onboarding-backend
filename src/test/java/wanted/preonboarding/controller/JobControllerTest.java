@@ -109,14 +109,26 @@ class JobControllerTest {
             performMvc(requestBody, status().isOk(), "{\"message\":\"채용공고가 수정되었습니다.\"}");
         }
 
+        @DisplayName("200 기술 수정 성공")
+        @Test
+        void givenDifferentSkills_thenOk() throws Exception {
+            String requestBody = getRequestBody("개발", "\"AWS\",\"Java\",\"SQL\",\"Spring Framework\"");
+
+            performMvc(requestBody, status().isOk(), "{\"message\":\"채용공고가 수정되었습니다.\"}");
+        }
+
         private static String getRequestBody(String group) {
+            return getRequestBody(group, "\"Java\",\"Spring Framework\",\"JPA\",\"SQL\"");
+        }
+
+        private static String getRequestBody(String group, String skills) {
             return REQUEST_FORM.formatted(
                     group,
                     "백엔드 개발자",
                     "주니어",
                     2_000_000,
                     "원티드랩에서 백엔드 주니어 개발자를 '적극' 채용합니다. 자격요건은..",
-                    "\"Java\",\"Spring Framework\",\"JPA\",\"SQL\"");
+                    skills);
         }
 
         private void performMvc(String requestBody, ResultMatcher resultMatcher, String jsonContent) throws Exception {

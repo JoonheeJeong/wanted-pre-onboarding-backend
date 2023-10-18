@@ -95,4 +95,11 @@ public class JobService {
             }
         }
     }
+
+    @Transactional
+    public void delete(Long jobId) {
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(NotFoundJobException::new);
+        jobRepository.delete(job);
+    }
 }

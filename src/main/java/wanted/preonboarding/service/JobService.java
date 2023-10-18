@@ -23,7 +23,7 @@ public class JobService {
     private final SkillRepository skillRepository;
 
     @Transactional
-    public void register(JobRegisterDTO.Request dto) {
+    public Job register(JobRegisterDTO.Request dto) {
         Company company = companyRepository.findById(dto.getCompanyId())
                 .orElseThrow(NotFoundCompanyException::new);
 
@@ -37,6 +37,6 @@ public class JobService {
                 })
                 .forEach(job::addJobSkill);
 
-        jobRepository.save(job);
+        return jobRepository.save(job);
     }
 }

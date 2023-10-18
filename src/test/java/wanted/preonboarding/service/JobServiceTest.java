@@ -9,12 +9,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wanted.preonboarding.domain.Company;
 import wanted.preonboarding.domain.Job;
+import wanted.preonboarding.domain.JobSkill;
 import wanted.preonboarding.domain.Skill;
 import wanted.preonboarding.domain.type.SkillName;
 import wanted.preonboarding.dto.JobRegisterDTO;
 import wanted.preonboarding.repository.CompanyRepository;
 import wanted.preonboarding.repository.JobRepository;
-import wanted.preonboarding.repository.JobSkillRepository;
 import wanted.preonboarding.repository.SkillRepository;
 
 import java.util.List;
@@ -32,8 +32,6 @@ class JobServiceTest {
     private JobService sut;
     @Mock
     private JobRepository jobRepository;
-    @Mock
-    private JobSkillRepository jobSkillRepository;
     @Mock
     private CompanyRepository companyRepository;
     @Mock
@@ -67,12 +65,10 @@ class JobServiceTest {
             // then
             verify(companyRepository, times(1))
                     .findById(eq(dto.getCompanyId()));
-            verify(jobRepository, times(1))
-                    .save(any(Job.class));
             verify(skillRepository, times(skills.size()))
                     .findByName(any(SkillName.class));
-            verify(jobSkillRepository, times(1))
-                    .saveAll(any());
+            verify(jobRepository, times(1))
+                    .save(any(Job.class));
         }
     }
 }

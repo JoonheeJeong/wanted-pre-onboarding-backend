@@ -3,15 +3,18 @@ spring:
     active: prod
     default: prod
   datasource:
-    url: jdbc:mysql://localhost:3307
+    url: jdbc:mysql://localhost:3307/wanted_preonboarding?serverTimezone=Asia/Seoul
     username: joonhee
     password: joonhee
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    defer-datasource-initialization: false
+    defer-datasource-initialization: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
   sql:
     init:
       mode: always

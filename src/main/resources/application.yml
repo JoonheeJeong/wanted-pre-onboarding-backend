@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    active: prod
+    default: prod
+  datasource:
+    url: jdbc:mysql://localhost:3307
+    username: joonhee
+    password: joonhee
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    defer-datasource-initialization: false
+    hibernate:
+      ddl-auto: create-drop
+    generate-ddl: true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:db/data.sql

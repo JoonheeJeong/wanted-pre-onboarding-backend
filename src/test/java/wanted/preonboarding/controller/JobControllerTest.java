@@ -1,11 +1,13 @@
 package wanted.preonboarding.controller;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import wanted.preonboarding.domain.type.Career;
 
@@ -204,6 +206,23 @@ class JobControllerTest {
                     .andExpect(content().json("{\"message\":\"해당 ID의 채용공고는 존재하지 않습니다.\"}"))
                     .andDo(print())
                     .andReturn();
+        }
+
+        @DisplayName("200 성공")
+        @Test
+        void pass() throws Exception {
+            final long jobId = 1L;
+
+            MvcResult mvcResult = mockMvc.perform(get(BASE_URI + "/" + jobId)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andReturn();
+
+            String content = mvcResult.getResponse().getContentAsString();
+            org.assertj.core.api.Assertions.assertThat(content).contains("\"jobId\":" + jobId);
+            Assertions.assertThat(content).contains("\"otherJobIds\":[2,3]");
         }
     }
 }

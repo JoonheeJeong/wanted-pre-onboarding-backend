@@ -8,8 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -138,6 +137,25 @@ class JobControllerTest {
                             .content(requestBody))
                     .andExpect(resultMatcher)
                     .andExpect(content().json(jsonContent))
+                    .andReturn();
+        }
+    }
+
+    @Order(3)
+    @DisplayName("채용공고 삭제")
+    @Nested
+    class Delete {
+
+        @DisplayName("[예외] 채용공고가 존재하지 않음")
+        @Test
+        void givenNonexistentJobId_thenRespond400() throws Exception {
+            // given
+            final long jobId = 0L;
+
+            // when, then
+            mockMvc.perform(delete(BASE_URI + "/" + jobId))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().json("{\"message\":\"해당 ID의 채용공고는 존재하지 않습니다.\"}"))
                     .andReturn();
         }
     }

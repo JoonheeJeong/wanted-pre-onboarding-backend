@@ -15,12 +15,15 @@ import wanted.preonboarding.domain.type.JobPosition;
 import wanted.preonboarding.domain.type.SkillName;
 import wanted.preonboarding.dto.JobRegisterDTO;
 import wanted.preonboarding.dto.JobUpdateDTO;
+import wanted.preonboarding.global.exception.NotFoundJobException;
 import wanted.preonboarding.repository.JobRepository;
 import wanted.preonboarding.repository.dev.JobSkillRepositoryDev;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 @SpringBootTest
@@ -41,17 +44,9 @@ class JobServiceTest {
         @Test
         void pass() {
             // given
-            List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK, SkillName.JPA, SkillName.AWS);
             Long companyId = 1L;
-            JobRegisterDTO.Request registerRequestDto = JobRegisterDTO.Request.builder()
-                    .companyId(companyId)
-                    .group(JobGroup.DEVELOPMENT)
-                    .position(JobPosition.BE)
-                    .career(Career.SENIOR)
-                    .reward(300000)
-                    .content("원티드랩에서 백엔드 시니어 개발자를 채용합니다. 자격요건은..")
-                    .skills(registerSkills)
-                    .build();
+            List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK, SkillName.JPA, SkillName.AWS);
+            JobRegisterDTO.Request registerRequestDto = makeRegisterDto(companyId, registerSkills);
 
             // when
             Job savedJob = sut.register(registerRequestDto);
@@ -74,17 +69,9 @@ class JobServiceTest {
         @Test
         void givenDifferentSkills_thenUpdateThem() {
             // given
-            List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK, SkillName.JPA, SkillName.AWS);
             Long companyId = 1L;
-            JobRegisterDTO.Request registerRequestDto = JobRegisterDTO.Request.builder()
-                    .companyId(companyId)
-                    .group(JobGroup.DEVELOPMENT)
-                    .position(JobPosition.BE)
-                    .career(Career.SENIOR)
-                    .reward(300000)
-                    .content("원티드랩에서 백엔드 시니어 개발자를 채용합니다. 자격요건은..")
-                    .skills(registerSkills)
-                    .build();
+            List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK, SkillName.JPA, SkillName.AWS);
+            JobRegisterDTO.Request registerRequestDto = makeRegisterDto(companyId, registerSkills);
             Job savedJob = sut.register(registerRequestDto);
 
             List<SkillName> updateSkills = List.of(SkillName.JAVA, SkillName.JPA, SkillName.SPRING_FRAMEWORK, SkillName.SQL);
@@ -115,5 +102,39 @@ class JobServiceTest {
                     .map(JobSkill::getSkill)
                     .toList();
         }
+
+    }
+    @DisplayName("채용공고 삭제 서비스")
+    @Nested
+    class Delete {
+
+        @DisplayName("성공")
+        @Test
+        void givenNonexistentJobId_thenThrowsException() {
+            // given
+            final Long companyId = 1L;
+            List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK, SkillName.JPA, SkillName.AWS);
+            JobRegisterDTO.Request registerDto = makeRegisterDto(companyId, registerSkills);
+            Job job = sut.register(registerDto);
+
+            // when
+            sut.delete(job.getId());
+
+            // then
+            Optional<Job> foundJob = jobRepository.findById(job.getId());
+            assertThat(foundJob).isEmpty();
+        }
+    }
+
+    private static JobRegisterDTO.Request makeRegisterDto(Long companyId, List<SkillName> registerSkills) {
+        return JobRegisterDTO.Request.builder()
+                .companyId(companyId)
+                .group(JobGroup.DEVELOPMENT)
+                .position(JobPosition.BE)
+                .career(Career.SENIOR)
+                .reward(300000)
+                .content("원티드랩에서 백엔드 시니어 개발자를 채용합니다. 자격요건은..")
+                .skills(registerSkills)
+                .build();
     }
 }

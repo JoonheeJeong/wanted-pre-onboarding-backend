@@ -1,9 +1,15 @@
 spring:
+  profiles:
+    active: dev
+    default: dev
   jpa:
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: create-drop
     generate-ddl: true
+    properties:
+      hibernate:
+        format_sql: true
   sql:
     init:
       mode: embedded

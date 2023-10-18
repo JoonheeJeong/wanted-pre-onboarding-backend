@@ -17,6 +17,8 @@ import java.util.List;
 
 public class JobUpdateDTO {
 
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Builder
     @Getter
     public static class Request {
 

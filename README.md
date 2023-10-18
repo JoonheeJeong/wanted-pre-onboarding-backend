@@ -2,15 +2,15 @@
 
 ## 📝 API 명세
 
-| 완료    | Method   | End Point                        | 기능             |
-|-------|----------|----------------------------------|----------------|
-| - [x] | POST     | `/api/v1/jobs`                   | 채용공고 등록        |
-| - [ ] | PUT      | `/api/v1/jobs/{job_id}`          | 채용공고 수정        |
-| - [ ] | DELETE   | `/api/v1/jobs/{job_id}`          | 채용공고 삭제        |
-| - [ ] | GET      | `/api/v1/jobs`                   | 채용공고 전체 조회     |
-| - [ ] | GET      | `/api/v1/jobs?keyword={keyword}` | 채용공고 키워드 검색 조회 |
-| - [ ] | GET      | `/api/v1/jobs/{job_id}`          | 채용공고 상세 조회     |
-| - [ ] | POST     | `/api/v1/apply`                  | 채용 지원          |
+| 완료                 | Method   | End Point                        | 기능             |
+|--------------------|----------|----------------------------------|----------------|
+| :heavy_check_mark: | POST     | `/api/v1/jobs`                   | 채용공고 등록        |
+| :heavy_check_mark: | PUT      | `/api/v1/jobs/{job_id}`          | 채용공고 수정        |
+|                    | DELETE   | `/api/v1/jobs/{job_id}`          | 채용공고 삭제        |
+|                    | GET      | `/api/v1/jobs`                   | 채용공고 전체 조회     |
+|                    | GET      | `/api/v1/jobs?keyword={keyword}` | 채용공고 키워드 검색 조회 |
+|                    | GET      | `/api/v1/jobs/{job_id}`          | 채용공고 상세 조회     |
+|                    | POST     | `/api/v1/apply`                  | 채용 지원          |
 
 ## ⚙️ 기능
 기능별 요구사항 분석 및 구현과정 포함 필요

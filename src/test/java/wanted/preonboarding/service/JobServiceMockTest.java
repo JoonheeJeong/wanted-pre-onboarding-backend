@@ -129,4 +129,20 @@ class JobServiceMockTest {
                     .isInstanceOf(NotFoundJobException.class);
         }
     }
+
+    @DisplayName("채용공고 상세 조회 서비스")
+    @Nested
+    class GetDetail {
+
+        @DisplayName("[예외] 채용공고 ID 조회 실패")
+        @Test
+        void givenNonexistentJobId_thenThrowsException() {
+            // given
+            given(jobRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            // when, then
+            assertThatThrownBy(() -> sut.getDetail(anyLong()))
+                    .isInstanceOf(NotFoundJobException.class);
+        }
+    }
 }

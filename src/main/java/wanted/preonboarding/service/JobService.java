@@ -8,6 +8,7 @@ import wanted.preonboarding.domain.Job;
 import wanted.preonboarding.domain.JobSkill;
 import wanted.preonboarding.domain.Skill;
 import wanted.preonboarding.domain.type.SkillName;
+import wanted.preonboarding.dto.JobDetailDTO;
 import wanted.preonboarding.dto.JobInfoDTO;
 import wanted.preonboarding.dto.JobRegisterDTO;
 import wanted.preonboarding.dto.JobUpdateDTO;
@@ -109,16 +110,23 @@ public class JobService {
         jobRepository.delete(job);
     }
 
-    private Job getJob(Long jobId) {
-        return jobRepository.findById(jobId)
-                .orElseThrow(NotFoundJobException::new);
-    }
-
     @Transactional(readOnly = true)
     public List<JobInfoDTO> getList() {
         List<Job> jobs = jobRepository.findAll();
         return jobs.stream()
                 .map(JobInfoDTO::from)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public JobDetailDTO getDetail(Long jobId) {
+        Job job = getJob(jobId);
+        List<Long> jobIds = jobRepository.findOtherIds(jobId, job.getCompany());
+        return JobDetailDTO.from(job, jobIds);
+    }
+
+    private Job getJob(Long jobId) {
+        return jobRepository.findById(jobId)
+                .orElseThrow(NotFoundJobException::new);
     }
 }

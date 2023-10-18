@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import wanted.preonboarding.domain.Company;
 import wanted.preonboarding.domain.Job;
+import wanted.preonboarding.domain.JobSkill;
 import wanted.preonboarding.domain.Skill;
 import wanted.preonboarding.domain.type.SkillName;
 import wanted.preonboarding.dto.JobRegisterDTO;
@@ -17,6 +18,7 @@ import wanted.preonboarding.dto.JobUpdateDTO;
 import wanted.preonboarding.global.exception.NotFoundJobException;
 import wanted.preonboarding.repository.CompanyRepository;
 import wanted.preonboarding.repository.JobRepository;
+import wanted.preonboarding.repository.JobSkillRepository;
 import wanted.preonboarding.repository.SkillRepository;
 
 import java.util.List;
@@ -38,6 +40,8 @@ class JobServiceMockTest {
     private CompanyRepository companyRepository;
     @Mock
     private SkillRepository skillRepository;
+    @Mock
+    private JobSkillRepository jobSkillRepository;
 
     @DisplayName("채용등록")
     @Nested
@@ -103,6 +107,9 @@ class JobServiceMockTest {
 
             // then
             verify(job, times(1)).update(eq(dto));
+            verify(jobSkillRepository, times(0)).delete(any(JobSkill.class));
+            verify(job, times(0)).addJobSkill(any(JobSkill.class));
+            verify(jobRepository, times(1)).save(eq(job));
         }
     }
 }

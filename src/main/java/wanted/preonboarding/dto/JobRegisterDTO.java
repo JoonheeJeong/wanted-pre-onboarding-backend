@@ -1,9 +1,13 @@
 package wanted.preonboarding.dto;
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import wanted.preonboarding.domain.type.Career;
 import wanted.preonboarding.domain.type.JobGroup;
 import wanted.preonboarding.domain.type.JobPosition;
@@ -29,7 +33,7 @@ public class JobRegisterDTO {
         @NotNull
         @Min(100_000)
         private Integer reward;
-        @NotEmpty
+        @NotBlank
         private String content;
         @NotEmpty
         private List<SkillName> skills;

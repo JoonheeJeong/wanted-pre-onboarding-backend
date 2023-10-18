@@ -10,9 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import wanted.preonboarding.domain.Company;
 import wanted.preonboarding.domain.Job;
 import wanted.preonboarding.domain.Skill;
-import wanted.preonboarding.domain.type.Career;
-import wanted.preonboarding.domain.type.JobGroup;
-import wanted.preonboarding.domain.type.JobPosition;
 import wanted.preonboarding.domain.type.SkillName;
 import wanted.preonboarding.dto.JobRegisterDTO;
 import wanted.preonboarding.repository.CompanyRepository;
@@ -51,14 +48,9 @@ class JobServiceTest {
         void pass() {
             // given
             List<SkillName> skills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK, SkillName.JPA, SkillName.SQL);
-            JobRegisterDTO.Request dto = JobRegisterDTO.Request.builder()
-                    .companyId(1L)
-                    .group(JobGroup.DEVELOPMENT)
-                    .position(JobPosition.BE)
-                    .career(Career.JUNIOR)
-                    .reward(100000)
-                    .skills(skills)
-                    .build();
+            JobRegisterDTO.Request dto = mock(JobRegisterDTO.Request.class);
+            given(dto.getCompanyId()).willReturn(1L);
+            given(dto.getSkills()).willReturn(skills);
 
             Company company = mock(Company.class);
             given(companyRepository.findById(anyLong()))

@@ -24,6 +24,7 @@ import wanted.preonboarding.repository.SkillRepository;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -110,6 +111,22 @@ class JobServiceMockTest {
             verify(jobSkillRepository, times(0)).delete(any(JobSkill.class));
             verify(job, times(0)).addJobSkill(any(JobSkill.class));
             verify(jobRepository, times(1)).save(eq(job));
+        }
+    }
+
+    @DisplayName("채용공고 삭제 서비스")
+    @Nested
+    class Delete {
+
+        @DisplayName("[예외] 채용공고 ID 조회 실패")
+        @Test
+        void givenNonexistentJobId_thenThrowsException() {
+            // given
+            given(jobRepository.findById(anyLong())).willReturn(Optional.empty());
+
+            // when, then
+            assertThatThrownBy(() -> sut.delete(anyLong()))
+                    .isInstanceOf(NotFoundJobException.class);
         }
     }
 }

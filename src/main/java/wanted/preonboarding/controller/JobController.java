@@ -47,14 +47,16 @@ public class JobController {
     @GetMapping
     public ResponseEntity<?> getList() {
         List<JobInfoDTO> body = jobService.getList();
-        return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
-                .body(body);
+        return makeOkResponseWithOnlyData(body);
     }
 
     @GetMapping("/{jobId}")
     public ResponseEntity<?> getDetail(@PathVariable Long jobId) {
         JobDetailDTO body = jobService.getDetail(jobId);
+        return makeOkResponseWithOnlyData(body);
+    }
+
+    private static ResponseEntity<?> makeOkResponseWithOnlyData(Object body) {
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON.toString())
                 .body(body);

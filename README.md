@@ -7,7 +7,7 @@
 |  ✅  | POST     | `/api/v1/jobs`                   | 채용공고 등록        |
 |  ✅  | PUT      | `/api/v1/jobs/{job_id}`          | 채용공고 수정        |
 |  ✅  | DELETE   | `/api/v1/jobs/{job_id}`          | 채용공고 삭제        |
-|     | GET      | `/api/v1/jobs`                   | 채용공고 전체 조회     |
+|  ✅  | GET      | `/api/v1/jobs`                   | 채용공고 전체 조회     |
 |     | GET      | `/api/v1/jobs?keyword={keyword}` | 채용공고 키워드 검색 조회 |
 |     | GET      | `/api/v1/jobs/{job_id}`          | 채용공고 상세 조회     |
 |     | POST     | `/api/v1/apply`                  | 채용 지원          |
@@ -177,6 +177,12 @@ Accept: application/json
     ...
 ]
 ```
+#### 구현 과정
+- 응답 DTO를 만들고, 이것을 List로 감싸서 Body로 응답한다.
+- 채용공고 목록을 stream으로 응답 DTO로 변환했다.  
+- 트랜잭션은 readOnly로 등록했다.
+- 컨트롤러 테스트에서 print를 찍어서 확인했다.
+- 서비스 통합 테스트로 레포지토리 테스트를 대체했다.
 
 ### 4-2. 채용공고 목록 키워드 검색 조회
 #### 개요

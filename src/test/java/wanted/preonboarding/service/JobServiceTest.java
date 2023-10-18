@@ -14,6 +14,7 @@ import wanted.preonboarding.domain.type.Career;
 import wanted.preonboarding.domain.type.JobGroup;
 import wanted.preonboarding.domain.type.JobPosition;
 import wanted.preonboarding.domain.type.SkillName;
+import wanted.preonboarding.dto.JobDetailDTO;
 import wanted.preonboarding.dto.JobInfoDTO;
 import wanted.preonboarding.dto.JobRegisterDTO;
 import wanted.preonboarding.dto.JobUpdateDTO;
@@ -149,6 +150,52 @@ class JobServiceTest {
                 Job job = jobs.get(i);
                 Company company = job.getCompany();
                 JobInfoDTO dto = list.get(i);
+                assertThat(dto.getCompanyName()).isEqualTo(company.getName());
+                assertThat(dto.getCity()).isEqualTo(company.getRegion().getCity());
+                assertThat(dto.getGroup()).isSameAs(job.getJobGroup());
+                assertThat(dto.getReward()).isEqualTo(job.getReward());
+                List<SkillName> skillNames = job.getJobSkills().stream()
+                        .map(JobSkill::getSkill)
+                        .map(Skill::getName)
+                        .toList();
+                assertThat(dto.getSkills()).isEqualTo(skillNames);
+            }
+        }
+    }
+
+    @DisplayName("채용공고 상세 조회 서비스")
+    @Nested
+    class GetDetail {
+
+        @DisplayName("성공")
+        @Test
+        void pass() {
+            // given
+            Career[] values = Career.values();
+            final int size = values.length;
+            List<Job> jobs = new ArrayList<>();
+            for (Career value : values) {
+                JobRegisterDTO.Request registerDto = makeRegisterDto(COMPANY_ID, value, SKILL_NAMES);
+                Job job = sut.register(registerDto);
+                jobs.add(job);
+            }
+            Job job = jobs.get(0);
+            final long jobId = job.getId();
+
+            // when
+            JobDetailDTO dto = sut.getDetail(jobId);
+
+            // then
+            Company company = job.getCompany();
+            List<Long> otherJobIds = dto.getOtherJobIds();
+            assertThat(otherJobIds).hasSize(size - 1);
+            for (int i = 1; i < size; ++i) {
+                Long anotherJobId = otherJobIds.get(i - 1);
+                Job anotherJob = jobs.get(i);
+                assertThat(anotherJobId).isEqualTo(anotherJob.getId());
+                Job storedAnotherJob = jobRepository.findById(anotherJobId).orElseThrow();
+                assertThat(storedAnotherJob).isSameAs(anotherJob);
+
                 assertThat(dto.getCompanyName()).isEqualTo(company.getName());
                 assertThat(dto.getCity()).isEqualTo(company.getRegion().getCity());
                 assertThat(dto.getGroup()).isSameAs(job.getJobGroup());

@@ -24,4 +24,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return respondAsInvalidInput();
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ApiMessageResponse.of(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }

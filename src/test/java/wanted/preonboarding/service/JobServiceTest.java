@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import wanted.preonboarding.domain.Company;
 import wanted.preonboarding.domain.Job;
 import wanted.preonboarding.domain.JobSkill;
 import wanted.preonboarding.domain.Skill;
@@ -13,17 +14,17 @@ import wanted.preonboarding.domain.type.Career;
 import wanted.preonboarding.domain.type.JobGroup;
 import wanted.preonboarding.domain.type.JobPosition;
 import wanted.preonboarding.domain.type.SkillName;
+import wanted.preonboarding.dto.JobInfoDTO;
 import wanted.preonboarding.dto.JobRegisterDTO;
 import wanted.preonboarding.dto.JobUpdateDTO;
-import wanted.preonboarding.global.exception.NotFoundJobException;
 import wanted.preonboarding.repository.JobRepository;
 import wanted.preonboarding.repository.dev.JobSkillRepositoryDev;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 @SpringBootTest
@@ -104,6 +105,7 @@ class JobServiceTest {
         }
 
     }
+
     @DisplayName("채용공고 삭제 서비스")
     @Nested
     class Delete {
@@ -126,6 +128,42 @@ class JobServiceTest {
         }
     }
 
+    @DisplayName("채용공고 목록 조회 서비스")
+    @Nested
+    class GetList {
+
+        @DisplayName("성공")
+        @Test
+        void pass() {
+            // given
+            final Long size = 3L;
+            List<Job> jobs = new ArrayList<>();
+            for (long companyId = 1L; companyId <= size; companyId++) {
+                List<SkillName> registerSkills = List.of(SkillName.JAVA, SkillName.SPRING_FRAMEWORK);
+                JobRegisterDTO.Request registerDto = makeRegisterDto(companyId, registerSkills);
+                Job job = sut.register(registerDto);
+                jobs.add(job);
+            }
+
+            // when
+            List<JobInfoDTO> list = sut.getList();
+
+            // then
+            assertThat(list).hasSize(size.intValue());
+            for (int i = 0; i < size; ++i) {
+                Job job = jobs.get(i);
+                Company company = job.getCompany();
+                JobInfoDTO dto = list.get(i);
+                assertThat(dto.getCompanyName()).isEqualTo(company.getName());
+                assertThat(dto.getCity()).isEqualTo(company.getRegion().getCity());
+                assertThat(dto.getGroup()).isSameAs(job.getJobGroup());
+                assertThat(dto.getReward()).isEqualTo(job.getReward());
+                List<SkillName> skillNames = job.getJobSkills().stream().map(JobSkill::getSkill).map(Skill::getName).toList();
+                assertThat(dto.getSkills()).isEqualTo(skillNames);
+            }
+        }
+    }
+
     private static JobRegisterDTO.Request makeRegisterDto(Long companyId, List<SkillName> registerSkills) {
         return JobRegisterDTO.Request.builder()
                 .companyId(companyId)
@@ -133,7 +171,7 @@ class JobServiceTest {
                 .position(JobPosition.BE)
                 .career(Career.SENIOR)
                 .reward(300000)
-                .content("원티드랩에서 백엔드 시니어 개발자를 채용합니다. 자격요건은..")
+                .content("채용내용...")
                 .skills(registerSkills)
                 .build();
     }

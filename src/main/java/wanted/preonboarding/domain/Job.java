@@ -18,7 +18,7 @@ import java.util.List;
 @Entity
 public class Job extends AutoIdAndCreatedAtAndUpdatedAtEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
     @Enumerated(value = EnumType.STRING)
